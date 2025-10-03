@@ -1,0 +1,6 @@
+# Build artifacts
+Codex/obj/Debug/
+Codex.Tests/bin/
+Codex/bin/
+Codex.Tests/obj/
+
