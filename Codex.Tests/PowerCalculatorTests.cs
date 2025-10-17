@@ -10,25 +10,25 @@ public class PowerCalculatorTests
     [Fact]
     public void CalculateGuardianCombatScore_BasedOnPowerLevel()
     {
-        // Arrange: guardian with no collections
+        // Arrange: guardian zonder collecties
         var mage = new Mage(1, "Aelith", "Location", 80, null, 100);
         
         // Act
         var score = PowerCalculator.CalculateGuardianCombatScore(mage);
         
-        // Assert: should equal power level
+        // Assert: moet gelijk zijn aan power level
         Assert.Equal(80.0, score);
     }
 
     [Fact]
     public void CalculateGuardianCombatScore_CollectionsAddBonus()
     {
-        // Arrange: mage with non-natural collection
+        // Arrange: mage met niet-natuurlijke collectie
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         var tech = new Technomancer(2, "Vex", "Location", 50, null);
         var serverCluster = new ServerCluster(1, "Server", "Desc", tech, 64, 256);
         
-        // Transfer non-natural collection to mage
+        // Draag niet-natuurlijke collectie over naar mage
         tech.TransferCollectionTo(serverCluster, mage);
         
         // Act
@@ -41,7 +41,7 @@ public class PowerCalculatorTests
     [Fact]
     public void CalculateGuardianCombatScore_NaturalCollectionsAddExtraBonus()
     {
-        // Arrange: mage with natural collection (Spellbook)
+        // Arrange: mage met natuurlijke collectie (Spellbook)
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         var spellbook = new Spellbook(1, "Codex", "Desc", mage, 100);
         
@@ -55,7 +55,7 @@ public class PowerCalculatorTests
     [Fact]
     public void CalculateGuardianCombatScore_MultipleNaturalCollections()
     {
-        // Arrange: mage with two natural collections
+        // Arrange: mage met twee natuurlijke collecties
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         var spellbook1 = new Spellbook(1, "Codex 1", "Desc", mage, 100);
         var spellbook2 = new Spellbook(2, "Codex 2", "Desc", mage, 50);
@@ -70,7 +70,7 @@ public class PowerCalculatorTests
     [Fact]
     public void CalculateGuardianCombatScore_MixedCollections()
     {
-        // Arrange: mage with 1 natural and 1 non-natural collection
+        // Arrange: mage met 1 natuurlijke en 1 niet-natuurlijke collectie
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         var tech = new Technomancer(2, "Vex", "Location", 50, null);
         var spellbook = new Spellbook(1, "Codex", "Desc", mage, 100);
@@ -87,7 +87,7 @@ public class PowerCalculatorTests
     [Fact]
     public void CalculateGuardianCombatScore_TechnomancerNaturalType()
     {
-        // Arrange: technomancer with natural ServerCluster
+        // Arrange: technomancer met natuurlijke ServerCluster
         var tech = new Technomancer(1, "Vex", "Location", 60, null);
         var cluster = new ServerCluster(1, "Server", "Desc", tech, 64, 256);
         
@@ -101,7 +101,7 @@ public class PowerCalculatorTests
     [Fact]
     public void CalculateGuardianCombatScore_ArchivistNaturalType()
     {
-        // Arrange: archivist with natural PaperArchive
+        // Arrange: archivist met natuurlijke PaperArchive
         var archivist = new Archivist(1, "Quorin", "Location", 70, null, 1000);
         var archive = new PaperArchive(1, "Archive", "Desc", archivist, 120);
         
@@ -115,7 +115,7 @@ public class PowerCalculatorTests
     [Fact]
     public void ApplyFanAndArchEnemyBonuses_WithNoFans()
     {
-        // Act: 50 base score, 0 fans, not fighting arch-enemy
+        // Act: 50 basisscore, 0 fans, vecht niet tegen aartsvijand
         var score = PowerCalculator.ApplyFanAndArchEnemyBonuses(50.0, 0, false);
         
         // Assert: sqrt(0) = 0, so score = 50
@@ -125,7 +125,7 @@ public class PowerCalculatorTests
     [Fact]
     public void ApplyFanAndArchEnemyBonuses_WithFans()
     {
-        // Act: 50 base score, 9 fans, not fighting arch-enemy
+        // Act: 50 basisscore, 9 fans, vecht niet tegen aartsvijand
         var score = PowerCalculator.ApplyFanAndArchEnemyBonuses(50.0, 9, false);
         
         // Assert: sqrt(9) = 3, so score = 53
@@ -135,7 +135,7 @@ public class PowerCalculatorTests
     [Fact]
     public void ApplyFanAndArchEnemyBonuses_WithArchEnemyBoost()
     {
-        // Act: 50 base score, 0 fans, fighting arch-enemy
+        // Act: 50 basisscore, 0 fans, vecht tegen aartsvijand
         var score = PowerCalculator.ApplyFanAndArchEnemyBonuses(50.0, 0, true);
         
         // Assert: 50 * 1.1 = 55 (with tolerance for floating point)
@@ -145,7 +145,7 @@ public class PowerCalculatorTests
     [Fact]
     public void ApplyFanAndArchEnemyBonuses_WithFansAndArchEnemy()
     {
-        // Act: 50 base score, 16 fans, fighting arch-enemy
+        // Act: 50 basisscore, 16 fans, vecht tegen aartsvijand
         var score = PowerCalculator.ApplyFanAndArchEnemyBonuses(50.0, 16, true);
         
         // Assert: (50 + sqrt(16)) * 1.1 = (50 + 4) * 1.1 = 59.4 (with tolerance for floating point)
@@ -155,7 +155,7 @@ public class PowerCalculatorTests
     [Fact]
     public void ApplyFanAndArchEnemyBonuses_HandlesNegativeFanCount()
     {
-        // Act: negative fan count should be treated as 0
+        // Act: negatief aantal fans moet als 0 behandeld worden
         var score = PowerCalculator.ApplyFanAndArchEnemyBonuses(50.0, -5, false);
         
         // Assert: sqrt(max(0, -5)) = sqrt(0) = 0, score = 50
@@ -165,16 +165,16 @@ public class PowerCalculatorTests
     [Fact]
     public void CalculateTeamCombatScore_SumsAllMembers()
     {
-        // Arrange: team with 2 members
+        // Arrange: team met 2 leden
         var tech1 = new Technomancer(1, "Vex", "Location", 50, null);
         var tech2 = new Technomancer(2, "Nyx", "Location", 60, null);
         var team = new Team(1, "Team", new[] { tech1, tech2 });
         
-        // Act: no fans, no arch-enemy
+        // Act: geen fans, geen aartsvijand
         var score = PowerCalculator.CalculateTeamCombatScore(
             team,
-            _ => 0,  // no fans
-            (g, e) => false  // not arch-enemy
+            _ => 0,  // geen fans
+            (g, e) => false  // niet aartsvijand
         );
         
         // Assert: 50 + 60 = 110
@@ -184,15 +184,15 @@ public class PowerCalculatorTests
     [Fact]
     public void CalculateTeamCombatScore_IncludesFanBonuses()
     {
-        // Arrange: team with 2 members, first has 4 fans
+        // Arrange: team met 2 leden, eerste heeft 4 fans
         var tech1 = new Technomancer(1, "Vex", "Location", 50, null);
         var tech2 = new Technomancer(2, "Nyx", "Location", 60, null);
         var team = new Team(1, "Team", new[] { tech1, tech2 });
         
-        // Act: tech1 has 4 fans
+        // Act: tech1 heeft 4 fans
         var score = PowerCalculator.CalculateTeamCombatScore(
             team,
-            g => g.Id == 1 ? 4 : 0,  // tech1 has 4 fans
+            g => g.Id == 1 ? 4 : 0,  // tech1 heeft 4 fans
             (g, e) => false
         );
         
@@ -203,13 +203,13 @@ public class PowerCalculatorTests
     [Fact]
     public void CalculateTeamCombatScore_IncludesCollectionBonuses()
     {
-        // Arrange: team with members that have collections
+        // Arrange: team met leden die collecties hebben
         var tech1 = new Technomancer(1, "Vex", "Location", 50, null);
         var tech2 = new Technomancer(2, "Nyx", "Location", 60, null);
         var cluster = new ServerCluster(1, "Server", "Desc", tech1, 64, 256);
         var team = new Team(1, "Team", new[] { tech1, tech2 });
         
-        // Act: no fans
+        // Act: geen fans
         var score = PowerCalculator.CalculateTeamCombatScore(
             team,
             _ => 0,

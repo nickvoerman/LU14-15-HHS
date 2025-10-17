@@ -8,7 +8,7 @@ public class FanTests
     [Fact]
     public void Fan_Constructor_ValidatesName()
     {
-        // Assert: empty name should throw
+        // Assert: lege naam moet fout geven
         Assert.Throws<ArgumentException>(() => new Fan(1, ""));
         Assert.Throws<ArgumentException>(() => new Fan(1, "   "));
         Assert.Throws<ArgumentException>(() => new Fan(1, null!));
@@ -68,11 +68,11 @@ public class FanTests
         var fan = new Fan(1, "Lina");
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         
-        // Act: follow same guardian twice
+        // Act: volg dezelfde guardian twee keer
         fan.Follow(mage);
         fan.Follow(mage);
         
-        // Assert: should only appear once (HashSet behavior)
+        // Assert: moet slechts eenmaal voorkomen (HashSet gedrag)
         Assert.Single(fan.FavoriteGuardians);
     }
 
@@ -108,10 +108,10 @@ public class FanTests
         var fan = new Fan(1, "Lina");
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         
-        // Act: unfollow without following first
+        // Act: ontvolg zonder eerst te volgen
         fan.Unfollow(mage);
         
-        // Assert: no error, just empty favorites
+        // Assert: geen fout, alleen lege favorieten
         Assert.Empty(fan.FavoriteGuardians);
     }
 
@@ -128,17 +128,17 @@ public class FanTests
     [Fact]
     public void Unfollow_CanUnfollowOneOfMultiple()
     {
-        // Arrange: fan follows two guardians
+        // Arrange: fan volgt twee guardians
         var fan = new Fan(1, "Lina");
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         var tech = new Technomancer(2, "Vex", "Location", 50, null);
         fan.Follow(mage);
         fan.Follow(tech);
         
-        // Act: unfollow just the mage
+        // Act: ontvolg alleen de mage
         fan.Unfollow(mage);
         
-        // Assert: still follows tech
+        // Assert: volgt tech nog steeds
         Assert.DoesNotContain(mage, fan.FavoriteGuardians);
         Assert.Contains(tech, fan.FavoriteGuardians);
         Assert.Single(fan.FavoriteGuardians);

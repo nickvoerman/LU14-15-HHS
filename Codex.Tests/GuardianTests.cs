@@ -41,7 +41,7 @@ public class GuardianTests
         // Arrange & Act: without catchphrase (should use default)
         var mage2 = new Mage(2, "Name", "Location", 50, null, 100);
         
-        // Assert: default catchphrase
+        // Assert: standaard catchphrase
         Assert.Equal("Knowledge is power, and I wield it.", mage2.Catchphrase);
     }
 
@@ -51,18 +51,18 @@ public class GuardianTests
         // Arrange
         var mage = new Mage(1, "Name", "Location", 50, null, 100);
         
-        // Act & Assert: cannot add self as enemy
+        // Act & Assert: kan zichzelf niet als vijand toevoegen
         Assert.Throws<InvalidOperationException>(() => mage.AddEnemy(mage));
     }
 
     [Fact]
     public void AddEnemy_CannotAddSameType()
     {
-        // Arrange: two mages
+        // Arrange: twee mages
         var mage1 = new Mage(1, "Aelith", "Location", 50, null, 100);
         var mage2 = new Mage(2, "Seren", "Location", 50, null, 100);
         
-        // Act & Assert: cannot add enemy of same type
+        // Act & Assert: kan geen vijand van hetzelfde type toevoegen
         Assert.Throws<InvalidOperationException>(() => mage1.AddEnemy(mage2));
     }
 
@@ -87,7 +87,7 @@ public class GuardianTests
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         var tech = new Technomancer(2, "Vex", "Location", 50, null);
         
-        // Act: add same enemy twice
+        // Act: voeg dezelfde vijand twee keer toe
         mage.AddEnemy(tech);
         mage.AddEnemy(tech);
         
@@ -123,10 +123,10 @@ public class GuardianTests
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         var tech = new Technomancer(2, "Vex", "Location", 50, null);
         
-        // Act: set arch-enemy (not previously in enemies list)
+        // Act: stel aartsvijand in (niet eerder in vijandlijst)
         mage.SetArchEnemy(tech);
         
-        // Assert: should be in both ArchEnemy and Enemies
+        // Assert: moet in zowel ArchEnemy als Enemies zitten
         Assert.Same(tech, mage.ArchEnemy);
         Assert.Contains(tech, mage.Enemies);
     }
@@ -137,12 +137,12 @@ public class GuardianTests
         // Arrange
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         var tech = new Technomancer(2, "Vex", "Location", 50, null);
-        mage.AddEnemy(tech); // add as regular enemy first
+        mage.AddEnemy(tech); // voeg eerst toe als gewone vijand
         
-        // Act: now set as arch-enemy
+        // Act: stel nu in als aartsvijand
         mage.SetArchEnemy(tech);
         
-        // Assert: should be arch-enemy and still only once in enemies list
+        // Assert: moet aartsvijand zijn en nog steeds maar één keer in vijandlijst
         Assert.Same(tech, mage.ArchEnemy);
         Assert.Single(mage.Enemies);
     }
@@ -150,23 +150,23 @@ public class GuardianTests
     [Fact]
     public void AddCollection_RequiresMatchingOwner()
     {
-        // Arrange: collection belongs to mage1
+        // Arrange: collectie behoort toe aan mage1
         var mage1 = new Mage(1, "Aelith", "Location", 50, null, 100);
         var mage2 = new Mage(2, "Seren", "Location", 50, null, 100);
         var spellbook = new Spellbook(100, "Book", "Desc", mage1, 100);
         
-        // Act & Assert: mage2 cannot add mage1's collection
+        // Act & Assert: mage2 kan mage1's collectie niet toevoegen
         Assert.Throws<InvalidOperationException>(() => mage2.AddCollection(spellbook));
     }
 
     [Fact]
     public void AddCollection_IgnoresDuplicates()
     {
-        // Arrange: collection already added via constructor
+        // Arrange: collectie al toegevoegd via constructor
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         var spellbook = new Spellbook(100, "Book", "Desc", mage, 100);
         
-        // Act: try to add again (already added in Spellbook constructor)
+        // Act: probeer opnieuw toe te voegen (al toegevoegd in Spellbook constructor)
         mage.AddCollection(spellbook);
         
         // Assert: should only appear once
@@ -180,7 +180,7 @@ public class GuardianTests
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         var spellbook = new Spellbook(100, "Book", "Desc", mage, 100);
         
-        // Act & Assert: collections cannot be removed, only transferred
+        // Act & Assert: collecties kunnen niet verwijderd worden, alleen overgedragen
         Assert.Throws<InvalidOperationException>(() => mage.RemoveCollection(spellbook));
     }
 
@@ -192,10 +192,10 @@ public class GuardianTests
         var tech = new Technomancer(2, "Vex", "Location", 50, null);
         var spellbook = new Spellbook(100, "Book", "Desc", mage, 100);
         
-        // Act: transfer from mage to tech
+        // Act: draag over van mage naar tech
         mage.TransferCollectionTo(spellbook, tech);
         
-        // Assert: tech now owns it, mage doesn't
+        // Assert: tech bezit het nu, mage niet
         Assert.DoesNotContain(spellbook, mage.Collections);
         Assert.Contains(spellbook, tech.Collections);
         Assert.Same(tech, spellbook.Owner);
@@ -204,13 +204,13 @@ public class GuardianTests
     [Fact]
     public void TransferCollectionTo_FailsIfNotOwner()
     {
-        // Arrange: mage1 owns the collection
+        // Arrange: mage1 bezit de collectie
         var mage1 = new Mage(1, "Aelith", "Location", 50, null, 100);
         var mage2 = new Mage(2, "Seren", "Location", 50, null, 100);
         var tech = new Technomancer(3, "Vex", "Location", 50, null);
         var spellbook = new Spellbook(100, "Book", "Desc", mage1, 100);
         
-        // Act & Assert: mage2 cannot transfer mage1's collection
+        // Act & Assert: mage2 kan mage1's collectie niet overdragen
         Assert.Throws<InvalidOperationException>(() => mage2.TransferCollectionTo(spellbook, tech));
     }
 
@@ -221,10 +221,10 @@ public class GuardianTests
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         var spellbook = new Spellbook(100, "Book", "Desc", mage, 100);
         
-        // Act: transfer to self (should do nothing)
+        // Act: draag over naar zelf (moet niets doen)
         mage.TransferCollectionTo(spellbook, mage);
         
-        // Assert: still owns it
+        // Assert: bezit het nog steeds
         Assert.Contains(spellbook, mage.Collections);
         Assert.Same(mage, spellbook.Owner);
     }
@@ -235,7 +235,7 @@ public class MageTests
     [Fact]
     public void Mage_Constructor_ValidatesManaReserve()
     {
-        // Assert: negative mana should throw
+        // Assert: negatieve mana moet fout geven
         Assert.Throws<ArgumentOutOfRangeException>(() => new Mage(1, "Name", "Location", 50, null, -1));
     }
 
@@ -278,7 +278,7 @@ public class MageTests
         // Arrange
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         
-        // Act: learn same spell twice
+        // Act: leer dezelfde spreuk twee keer
         mage.LearnSpell("Fireball");
         mage.LearnSpell("Fireball");
         
@@ -297,7 +297,7 @@ public class MageTests
         mage.LearnSpell("   ");
         mage.LearnSpell(null!);
         
-        // Assert: no spells learned
+        // Assert: geen spreuken geleerd
         Assert.Empty(mage.Spells);
     }
 }
@@ -342,7 +342,7 @@ public class TechnomancerTests
         // Arrange
         var tech = new Technomancer(1, "Vex", "Location", 50, null);
         
-        // Act: add same algorithm twice
+        // Act: voeg hetzelfde algoritme twee keer toe
         tech.AddAlgorithm("A*");
         tech.AddAlgorithm("A*");
         
@@ -361,7 +361,7 @@ public class TechnomancerTests
         tech.AddAlgorithm("   ");
         tech.AddAlgorithm(null!);
         
-        // Assert: no algorithms added
+        // Assert: geen algoritmes toegevoegd
         Assert.Empty(tech.Algorithms);
     }
 }
@@ -371,7 +371,7 @@ public class ArchivistTests
     [Fact]
     public void Archivist_Constructor_ValidatesDocumentCount()
     {
-        // Assert: negative document count should throw
+        // Assert: negatief aantal documenten moet fout geven
         Assert.Throws<ArgumentOutOfRangeException>(() => new Archivist(1, "Name", "Location", 50, null, -1));
     }
 

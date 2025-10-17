@@ -12,7 +12,7 @@ public class SpellbookTests
         // Arrange
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         
-        // Act & Assert: empty name should throw
+        // Act & Assert: lege naam moet fout geven
         Assert.Throws<ArgumentException>(() => new Spellbook(1, "", "Description", mage, 100));
         Assert.Throws<ArgumentException>(() => new Spellbook(1, "   ", "Description", mage, 100));
     }
@@ -23,7 +23,7 @@ public class SpellbookTests
         // Arrange
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         
-        // Act & Assert: empty description should throw
+        // Act & Assert: lege beschrijving moet fout geven
         Assert.Throws<ArgumentException>(() => new Spellbook(1, "Name", "", mage, 100));
         Assert.Throws<ArgumentException>(() => new Spellbook(1, "Name", "   ", mage, 100));
     }
@@ -34,14 +34,14 @@ public class SpellbookTests
         // Arrange
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         
-        // Act & Assert: negative pages should throw
+        // Act & Assert: negatief aantal pagina's moet fout geven
         Assert.Throws<ArgumentOutOfRangeException>(() => new Spellbook(1, "Name", "Desc", mage, -1));
     }
 
     [Fact]
     public void Spellbook_Constructor_RequiresOwner()
     {
-        // Act & Assert: null owner should throw
+        // Act & Assert: null eigenaar moet fout geven
         Assert.Throws<ArgumentNullException>(() => new Spellbook(1, "Name", "Desc", null!, 100));
     }
 
@@ -72,7 +72,7 @@ public class SpellbookTests
         // Act
         var spellbook = new Spellbook(100, "Codex Ignis", "Fire magic", mage, 320);
         
-        // Assert: owner should have this collection
+        // Assert: eigenaar moet deze collectie hebben
         Assert.Contains(spellbook, mage.Collections);
     }
 
@@ -82,10 +82,10 @@ public class SpellbookTests
         // Arrange
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         
-        // Act: empty spellbook with 0 pages
+        // Act: leeg spellbook met 0 pagina's
         var spellbook = new Spellbook(100, "Empty Book", "Blank pages", mage, 0);
         
-        // Assert: should work fine
+        // Assert: moet goed werken
         Assert.Equal(0, spellbook.Pages);
     }
 }
@@ -118,7 +118,7 @@ public class PaperArchiveTests
         // Arrange
         var archivist = new Archivist(1, "Quorin", "Location", 50, null, 1000);
         
-        // Act & Assert: negative shelves should throw
+        // Act & Assert: negatief aantal planken moet fout geven
         Assert.Throws<ArgumentOutOfRangeException>(() => new PaperArchive(1, "Name", "Desc", archivist, -1));
     }
 
@@ -202,7 +202,7 @@ public class ServerClusterTests
         // Arrange
         var tech = new Technomancer(1, "Vex", "Location", 50, null);
         
-        // Act & Assert: negative CPU cores should throw
+        // Act & Assert: negatief aantal CPU cores moet fout geven
         Assert.Throws<ArgumentOutOfRangeException>(() => new ServerCluster(1, "Name", "Desc", tech, -1, 256));
     }
 
@@ -212,7 +212,7 @@ public class ServerClusterTests
         // Arrange
         var tech = new Technomancer(1, "Vex", "Location", 50, null);
         
-        // Act & Assert: negative RAM should throw
+        // Act & Assert: negatief RAM moet fout geven
         Assert.Throws<ArgumentOutOfRangeException>(() => new ServerCluster(1, "Name", "Desc", tech, 64, -1));
     }
 
@@ -261,7 +261,7 @@ public class ServerClusterTests
         // Arrange
         var tech = new Technomancer(1, "Vex", "Location", 50, null);
         
-        // Act: cluster with no resources
+        // Act: cluster zonder resources
         var cluster = new ServerCluster(300, "Offline", "Inactive cluster", tech, 0, 0);
         
         // Assert
@@ -275,13 +275,13 @@ public class CollectionOwnershipTests
     [Fact]
     public void Collection_CanBeOwnedByDifferentGuardianType()
     {
-        // Arrange: Technomancer can own a Spellbook (not their natural type)
+        // Arrange: Technomancer kan een Spellbook bezitten (niet hun natuurlijke type)
         var tech = new Technomancer(1, "Vex", "Location", 50, null);
         
-        // Act: create off-type collection
+        // Act: creëer niet-natuurlijke collectie
         var spellbook = new Spellbook(100, "Codex Umbra", "Stolen book", tech, 210);
         
-        // Assert: should work, just won't get natural collection bonus
+        // Assert: moet werken, krijgt alleen geen natuurlijke collectiebonus
         Assert.Same(tech, spellbook.Owner);
         Assert.Contains(spellbook, tech.Collections);
         Assert.Equal(CollectionType.Spellbook, spellbook.Type);
@@ -290,15 +290,15 @@ public class CollectionOwnershipTests
     [Fact]
     public void Collection_TransferChangesOwner()
     {
-        // Arrange: mage owns a spellbook
+        // Arrange: mage bezit een spellbook
         var mage = new Mage(1, "Aelith", "Location", 50, null, 100);
         var tech = new Technomancer(2, "Vex", "Location", 50, null);
         var spellbook = new Spellbook(100, "Book", "Desc", mage, 100);
         
-        // Act: transfer via guardian method
+        // Act: overdracht via guardian methode
         mage.TransferCollectionTo(spellbook, tech);
         
-        // Assert: tech is now owner
+        // Assert: tech is nu eigenaar
         Assert.Same(tech, spellbook.Owner);
     }
 }

@@ -6,7 +6,7 @@ using Codex.Services;
 
 namespace Codex.Tests;
 
-// Deze subclass schakelt randomness uit door altijd het hoogste gewicht te kiezen
+// Deze subklasse schakelt randomness uit door altijd het hoogste gewicht te kiezen
 public class DeterministicBattleService : BattleService
 {
     public DeterministicBattleService(Func<Guardian, int> fanCountProvider) : base(fanCountProvider, new Random(0)) { }
@@ -21,11 +21,11 @@ public class IndividualBattleTests
     [Fact]
     public void IndividualBattle_RequiresDifferentTypes()
     {
-        // Arrange: two mages (same type)
+        // Arrange: twee mages (zelfde type)
         var mage1 = new Mage(1, "A", "L", 60, null, 100);
         var mage2 = new Mage(2, "B", "L", 60, null, 100);
         
-        // Act & Assert: same type should throw
+        // Act & Assert: zelfde type moet fout geven
         Assert.Throws<InvalidOperationException>(() => 
             new IndividualBattle(1, DateTime.Now, "Arena", mage1, mage2, mage1));
     }
@@ -33,12 +33,12 @@ public class IndividualBattleTests
     [Fact]
     public void IndividualBattle_WinnerMustBeParticipant()
     {
-        // Arrange: valid participants but wrong winner
+        // Arrange: geldige deelnemers maar verkeerde winnaar
         var mage = new Mage(1, "A", "L", 60, null, 100);
         var tech = new Technomancer(2, "B", "L", 40, null);
         var outsider = new Archivist(3, "C", "L", 50, null, 1000);
         
-        // Act & Assert: outsider cannot be winner
+        // Act & Assert: buitenstaander kan geen winnaar zijn
         Assert.Throws<ArgumentException>(() => 
             new IndividualBattle(1, DateTime.Now, "Arena", mage, tech, outsider));
     }
@@ -50,7 +50,7 @@ public class IndividualBattleTests
         var mage = new Mage(1, "A", "L", 60, null, 100);
         var tech = new Technomancer(2, "B", "L", 40, null);
         
-        // Act: mage wins
+        // Act: mage wint
         var battle = new IndividualBattle(1, DateTime.Now, "Arena", mage, tech, mage);
         
         // Assert
@@ -85,7 +85,7 @@ public class TeamBattleTests
     [Fact]
     public void TeamBattle_RequiresValidTeams()
     {
-        // Arrange: team with only 1 member (invalid)
+        // Arrange: team met slechts 1 lid (ongeldig)
         var team1 = new Team(1, "Team1");
         team1.AddMember(new Technomancer(1, "A", "L", 50, null));
         
@@ -93,7 +93,7 @@ public class TeamBattleTests
         var tech2 = new Technomancer(3, "C", "L", 50, null);
         var team2 = new Team(2, "Team2", new[] { tech1, tech2 });
         
-        // Act & Assert: invalid team should throw
+        // Act & Assert: ongeldig team moet fout geven
         Assert.Throws<InvalidOperationException>(() => 
             new TeamBattle(1, DateTime.Now, "Arena", team1, team2, team2));
     }
@@ -101,7 +101,7 @@ public class TeamBattleTests
     [Fact]
     public void TeamBattle_RequiresDifferentTypes()
     {
-        // Arrange: both teams are technomancers
+        // Arrange: beide teams zijn technomancers
         var tech1 = new Technomancer(1, "A", "L", 50, null);
         var tech2 = new Technomancer(2, "B", "L", 50, null);
         var team1 = new Team(1, "Team1", new[] { tech1, tech2 });
@@ -110,7 +110,7 @@ public class TeamBattleTests
         var tech4 = new Technomancer(4, "D", "L", 50, null);
         var team2 = new Team(2, "Team2", new[] { tech3, tech4 });
         
-        // Act & Assert: same type should throw
+        // Act & Assert: zelfde type moet fout geven
         Assert.Throws<InvalidOperationException>(() => 
             new TeamBattle(1, DateTime.Now, "Arena", team1, team2, team1));
     }
@@ -118,7 +118,7 @@ public class TeamBattleTests
     [Fact]
     public void TeamBattle_WinnerMustBeParticipant()
     {
-        // Arrange: valid teams but wrong winner
+        // Arrange: geldige teams maar verkeerde winnaar
         var tech1 = new Technomancer(1, "A", "L", 50, null);
         var tech2 = new Technomancer(2, "B", "L", 50, null);
         var teamTech = new Team(1, "Techs", new[] { tech1, tech2 });
@@ -131,7 +131,7 @@ public class TeamBattleTests
         var arch2 = new Archivist(6, "F", "L", 50, null, 1000);
         var teamOutsider = new Team(3, "Outsiders", new[] { arch1, arch2 });
         
-        // Act & Assert: outsider team cannot be winner
+        // Act & Assert: buitenstaander team kan geen winnaar zijn
         Assert.Throws<ArgumentException>(() => 
             new TeamBattle(1, DateTime.Now, "Arena", teamTech, teamMage, teamOutsider));
     }
@@ -185,47 +185,47 @@ public class BattleServiceTests
     [Fact]
     public void IndividualBattle_FansInfluenceOutcome()
     {
-        // Arrange: weaker guardian with more fans
+        // Arrange: zwakkere guardian met meer fans
         var mage = new Mage(1, "A", "L", 50, null, 100);
-        var tech = new Technomancer(2, "B", "L", 60, null); // stronger power level
+        var tech = new Technomancer(2, "B", "L", 60, null); // hoger power level
         
-        // Act: mage has 100 fans (sqrt(100) = 10), giving mage total 60 vs tech's 60
+        // Act: mage heeft 100 fans (sqrt(100) = 10), geeft mage totaal 60 vs tech's 60
         var service = new DeterministicBattleService(g => g.Id == 1 ? 100 : 0);
         var battle = service.CreateIndividualBattle(1, DateTime.Now, "Arena", mage, tech);
 
-        // Assert: with fans, mage should win (tie goes to first)
+        // Assert: met fans moet mage winnen (gelijkspel gaat naar eerste)
         Assert.Same(mage, battle.Winner);
     }
 
     [Fact]
     public void IndividualBattle_ArchEnemyBoostApplied()
     {
-        // Arrange: slightly weaker guardian fighting their arch-enemy
+        // Arrange: iets zwakkere guardian vecht tegen hun aartsvijand
         var mage = new Mage(1, "A", "L", 50, null, 100);
-        var tech = new Technomancer(2, "B", "L", 54, null); // tech slightly stronger
-        mage.SetArchEnemy(tech); // mage gets 10% boost
+        var tech = new Technomancer(2, "B", "L", 54, null); // tech iets sterker
+        mage.SetArchEnemy(tech); // mage krijgt 10% boost
         
-        // Act: mage gets arch-enemy boost: 50 * 1.1 = 55 > 54
+        // Act: mage krijgt aartsvijand-boost: 50 * 1.1 = 55 > 54
         var service = new DeterministicBattleService(_ => 0);
         var battle = service.CreateIndividualBattle(1, DateTime.Now, "Arena", mage, tech);
 
-        // Assert: mage should win with arch-enemy boost
+        // Assert: mage moet winnen met aartsvijand-boost
         Assert.Same(mage, battle.Winner);
     }
 
     [Fact]
     public void IndividualBattle_NaturalCollectionBoostApplied()
     {
-        // Arrange: guardians with different collection types
+        // Arrange: guardians met verschillende collectietypes
         var mage = new Mage(1, "A", "L", 50, null, 100);
         var tech = new Technomancer(2, "B", "L", 50, null);
-        var spellbook = new Spellbook(1, "Book", "Desc", mage, 100); // natural for mage
+        var spellbook = new Spellbook(1, "Book", "Desc", mage, 100); // natuurlijk voor mage
         
-        // Act: mage gets collection bonus
+        // Act: mage krijgt collectiebonus
         var service = new DeterministicBattleService(_ => 0);
         var battle = service.CreateIndividualBattle(1, DateTime.Now, "Arena", mage, tech);
 
-        // Assert: mage should win (52.5 vs 50)
+        // Assert: mage moet winnen (52.5 vs 50)
         Assert.Same(mage, battle.Winner);
     }
 
@@ -254,7 +254,7 @@ public class BattleServiceTests
     [Fact]
     public void TeamBattle_IncludesIndividualFanCounts()
     {
-        // Arrange: tech team has fans
+        // Arrange: tech team heeft fans
         var tech1 = new Technomancer(1, "A", "L", 50, null);
         var tech2 = new Technomancer(2, "B", "L", 50, null);
         var teamTech = new Team(1, "Techs", new[] { tech1, tech2 });
@@ -263,18 +263,18 @@ public class BattleServiceTests
         var mage2 = new Mage(4, "D", "L", 50, null, 100);
         var teamMage = new Team(2, "Mages", new[] { mage1, mage2 });
         
-        // Act: tech1 has 16 fans (sqrt(16) = 4), giving techs edge
+        // Act: tech1 heeft 16 fans (sqrt(16) = 4), geeft techs voorsprong
         var service = new DeterministicBattleService(g => g.Id == 1 ? 16 : 0);
         var battle = service.CreateTeamBattle(1, DateTime.Now, "Arena", teamTech, teamMage);
 
-        // Assert: tech team should win (104 vs 100)
+        // Assert: tech team moet winnen (104 vs 100)
         Assert.Same(teamTech, battle.Winner);
     }
 
     [Fact]
     public void TeamBattle_IncludesCollectionBonuses()
     {
-        // Arrange: tech team has natural collections
+        // Arrange: tech team heeft natuurlijke collecties
         var tech1 = new Technomancer(1, "A", "L", 50, null);
         var tech2 = new Technomancer(2, "B", "L", 50, null);
         var cluster = new ServerCluster(1, "Server", "Desc", tech1, 64, 256);
@@ -284,27 +284,27 @@ public class BattleServiceTests
         var mage2 = new Mage(4, "D", "L", 50, null, 100);
         var teamMage = new Team(2, "Mages", new[] { mage1, mage2 });
         
-        // Act: tech1 has natural collection (50 + 1.0 + 1.5 = 52.5)
+        // Act: tech1 heeft natuurlijke collectie (50 + 1.0 + 1.5 = 52.5)
         var service = new DeterministicBattleService(_ => 0);
         var battle = service.CreateTeamBattle(1, DateTime.Now, "Arena", teamTech, teamMage);
 
-        // Assert: tech team should win (102.5 vs 100)
+        // Assert: tech team moet winnen (102.5 vs 100)
         Assert.Same(teamTech, battle.Winner);
     }
 
     [Fact]
     public void CalculateWinner_HandlesEqualScores()
     {
-        // Arrange: two guardians with identical scores
+        // Arrange: twee guardians met identieke scores
         var mage = new Mage(1, "A", "L", 50, null, 100);
         var tech = new Technomancer(2, "B", "L", 50, null);
         
-        // Act: deterministic service picks first on tie
+        // Act: deterministische service kiest eerste bij gelijkspel
         var service = new DeterministicBattleService(_ => 0);
         var battle = new IndividualBattle(1, DateTime.Now, "Arena", mage, tech, mage);
         var winner = service.CalculateWinner(battle);
 
-        // Assert: should handle tie gracefully (first wins in deterministic)
+        // Assert: moet gelijkspel netjes afhandelen (eerste wint in deterministisch)
         Assert.Same(mage, winner);
     }
 }

@@ -9,7 +9,7 @@ public class FanServiceTests
     [Fact]
     public void CountFansOf_ReturnsCorrectCount()
     {
-        // Arrange: 3 fans, 2 follow mage, 1 follows tech
+        // Arrange: 3 fans, 2 volgen mage, 1 volgt tech
         var mage = new Mage(1, "A", "L", 60, null, 100);
         var tech = new Technomancer(2, "B", "L", 40, null);
         var fans = new List<Fan>
@@ -31,7 +31,7 @@ public class FanServiceTests
     [Fact]
     public void CountFansOf_ReturnsZeroWhenNoFans()
     {
-        // Arrange: guardian with no fans
+        // Arrange: guardian zonder fans
         var mage = new Mage(1, "A", "L", 60, null, 100);
         var fans = new List<Fan> { new Fan(1, "f1"), new Fan(2, "f2") };
         var service = new FanService();
@@ -43,7 +43,7 @@ public class FanServiceTests
     [Fact]
     public void CountFansOf_HandlesEmptyFanList()
     {
-        // Arrange: no fans at all
+        // Arrange: helemaal geen fans
         var mage = new Mage(1, "A", "L", 60, null, 100);
         var fans = new List<Fan>();
         var service = new FanService();
@@ -55,7 +55,7 @@ public class FanServiceTests
     [Fact]
     public void CountFansOf_HandlesFanFollowingMultipleGuardians()
     {
-        // Arrange: fan follows both guardians
+        // Arrange: fan volgt beide guardians
         var mage = new Mage(1, "A", "L", 60, null, 100);
         var tech = new Technomancer(2, "B", "L", 40, null);
         var fan = new Fan(1, "f1");
@@ -64,7 +64,7 @@ public class FanServiceTests
         var fans = new List<Fan> { fan };
         var service = new FanService();
 
-        // Act & Assert: should count once per guardian
+        // Act & Assert: moet één keer per guardian tellen
         Assert.Equal(1, service.CountFansOf(mage, fans));
         Assert.Equal(1, service.CountFansOf(tech, fans));
     }
@@ -115,7 +115,7 @@ public class FanServiceTests
     [Fact]
     public void TransferFans_MovesAllRequestedWhenAvailable()
     {
-        // Arrange: 3 fans follow loser
+        // Arrange: 3 fans volgen verliezer
         var mage = new Mage(1, "A", "L", 60, null, 100);
         var tech = new Technomancer(2, "B", "L", 40, null);
         var fans = new List<Fan>
@@ -129,7 +129,7 @@ public class FanServiceTests
         fans[2].Follow(mage);
         var service = new FanService();
 
-        // Act: transfer 2 fans
+        // Act: verplaats 2 fans
         var moved = service.TransferFans(mage, tech, fans, 2);
 
         // Assert
@@ -141,7 +141,7 @@ public class FanServiceTests
     [Fact]
     public void TransferFans_ReturnsActualCountWhenInsufficientFans()
     {
-        // Arrange: only 2 fans follow loser, but we request 5
+        // Arrange: slechts 2 fans volgen verliezer, maar we vragen om 5
         var mage = new Mage(1, "A", "L", 60, null, 100);
         var tech = new Technomancer(2, "B", "L", 40, null);
         var fans = new List<Fan>
@@ -152,13 +152,13 @@ public class FanServiceTests
         };
         fans[0].Follow(mage);
         fans[1].Follow(mage);
-        fans[2].Follow(tech); // doesn't follow mage
+        fans[2].Follow(tech); // volgt mage niet
         var service = new FanService();
 
-        // Act: request 5, but only 2 available
+        // Act: vraag om 5, maar slechts 2 beschikbaar
         var moved = service.TransferFans(mage, tech, fans, 5);
 
-        // Assert: only 2 moved
+        // Assert: slechts 2 verplaatst
         Assert.Equal(2, moved);
         Assert.Equal(0, service.CountFansOf(mage, fans));
         Assert.Equal(3, service.CountFansOf(tech, fans));
@@ -167,7 +167,7 @@ public class FanServiceTests
     [Fact]
     public void TransferFans_ReturnsZeroWhenNoFansFollow()
     {
-        // Arrange: no fans follow the loser
+        // Arrange: geen fans volgen de verliezer
         var mage = new Mage(1, "A", "L", 60, null, 100);
         var tech = new Technomancer(2, "B", "L", 40, null);
         var fans = new List<Fan> { new Fan(1, "f1"), new Fan(2, "f2") };
@@ -175,10 +175,10 @@ public class FanServiceTests
         fans[1].Follow(tech);
         var service = new FanService();
 
-        // Act: try to transfer from mage (who has no fans)
+        // Act: probeer te verplaatsen van mage (die geen fans heeft)
         var moved = service.TransferFans(mage, tech, fans, 1);
 
-        // Assert: nothing moved
+        // Assert: niets verplaatst
         Assert.Equal(0, moved);
         Assert.Equal(0, service.CountFansOf(mage, fans));
         Assert.Equal(2, service.CountFansOf(tech, fans));
@@ -194,10 +194,10 @@ public class FanServiceTests
         fans[0].Follow(mage);
         var service = new FanService();
 
-        // Act: transfer 0 fans
+        // Act: verplaats 0 fans
         var moved = service.TransferFans(mage, tech, fans, 0);
 
-        // Assert: nothing changed
+        // Assert: niets veranderd
         Assert.Equal(0, moved);
         Assert.Equal(1, service.CountFansOf(mage, fans));
         Assert.Equal(0, service.CountFansOf(tech, fans));
@@ -213,10 +213,10 @@ public class FanServiceTests
         fans[0].Follow(mage);
         var service = new FanService();
 
-        // Act: transfer negative count (should do nothing)
+        // Act: verplaats negatief aantal (moet niets doen)
         var moved = service.TransferFans(mage, tech, fans, -5);
 
-        // Assert: nothing changed
+        // Assert: niets veranderd
         Assert.Equal(0, moved);
         Assert.Equal(1, service.CountFansOf(mage, fans));
         Assert.Equal(0, service.CountFansOf(tech, fans));
@@ -225,7 +225,7 @@ public class FanServiceTests
     [Fact]
     public void TransferFans_FanCanFollowBothAfterTransfer()
     {
-        // Arrange: fan follows both initially
+        // Arrange: fan volgt beide initieel
         var mage = new Mage(1, "A", "L", 60, null, 100);
         var tech = new Technomancer(2, "B", "L", 40, null);
         var fan1 = new Fan(1, "f1");
@@ -236,13 +236,13 @@ public class FanServiceTests
         var fans = new List<Fan> { fan1, fan2 };
         var service = new FanService();
 
-        // Act: transfer 1 fan from mage to tech
+        // Act: verplaats 1 fan van mage naar tech
         var moved = service.TransferFans(mage, tech, fans, 1);
 
-        // Assert: fan1 was transferred (unfollowed mage, still follows tech once)
+        // Assert: fan1 werd verplaatst (ontvolgt mage, volgt tech nog steeds eenmaal)
         Assert.Equal(1, moved);
-        Assert.Equal(1, service.CountFansOf(mage, fans)); // fan2 still follows
-        Assert.Equal(1, service.CountFansOf(tech, fans)); // fan1 follows tech (not duplicated)
+        Assert.Equal(1, service.CountFansOf(mage, fans)); // fan2 volgt nog steeds
+        Assert.Equal(1, service.CountFansOf(tech, fans)); // fan1 volgt tech (niet gedupliceerd)
     }
 
     [Fact]
@@ -284,7 +284,7 @@ public class FanServiceTests
     [Fact]
     public void TransferFans_HandlesEmptyFanList()
     {
-        // Arrange: no fans at all
+        // Arrange: helemaal geen fans
         var mage = new Mage(1, "A", "L", 60, null, 100);
         var tech = new Technomancer(2, "B", "L", 40, null);
         var fans = new List<Fan>();
@@ -293,7 +293,7 @@ public class FanServiceTests
         // Act
         var moved = service.TransferFans(mage, tech, fans, 1);
 
-        // Assert: nothing to transfer
+        // Assert: niets om te verplaatsen
         Assert.Equal(0, moved);
     }
 }

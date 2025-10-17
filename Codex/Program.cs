@@ -37,9 +37,9 @@ while (true)
             foreach (var g in store.Guardians)
             {
                 Console.WriteLine(g);
-                Console.WriteLine($"  Enemies: {string.Join(", ", g.Enemies)}");
-                Console.WriteLine($"  ArchEnemy: {g.ArchEnemy}");
-                Console.WriteLine($"  Collections: {string.Join(", ", g.Collections)}");
+                Console.WriteLine($"  Vijanden: {string.Join(", ", g.Enemies)}");
+                Console.WriteLine($"  Aartsvijand: {g.ArchEnemy}");
+                Console.WriteLine($"  Collecties: {string.Join(", ", g.Collections)}");
                 Console.WriteLine($"  Fans: {GetFanCount(g)}");
             }
             Console.WriteLine();
@@ -47,7 +47,7 @@ while (true)
         case "2":
             foreach (var c in store.Collections)
             {
-                Console.WriteLine($"{c} | Owner: {c.Owner}");
+                Console.WriteLine($"{c} | Eigenaar: {c.Owner}");
             }
             Console.WriteLine();
             break;
@@ -61,7 +61,7 @@ while (true)
         case "4":
             foreach (var t in store.Teams)
             {
-                Console.WriteLine($"{t.Id} {t.Name} ({t.TeamType}) members: {string.Join(", ", t.Members)}");
+                Console.WriteLine($"{t.Id} {t.Name} ({t.TeamType}) leden: {string.Join(", ", t.Members)}");
             }
             Console.WriteLine();
             break;
@@ -79,7 +79,7 @@ while (true)
             }
             for (int idx = 0; idx < differentTypePairs.Count; idx++)
             {
-                Console.WriteLine($"{idx}) {differentTypePairs[idx].Item1} VS {differentTypePairs[idx].Item2}");
+                Console.WriteLine($"{idx}) {differentTypePairs[idx].Item1} tegen {differentTypePairs[idx].Item2}");
             }
             Console.Write("Kies duel: ");
             if (int.TryParse(Console.ReadLine(), out var duelIdx) && duelIdx >= 0 && duelIdx < differentTypePairs.Count)
