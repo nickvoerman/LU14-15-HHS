@@ -23,7 +23,10 @@ Uitvoeren
 dotnet build
 dotnet run --project Codex
 dotnet test
-dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+# Tests met code coverage
+dotnet test --collect:"XPlat Code Coverage" --results-directory ./TestResults
+# Resultaten: ./TestResults/<guid>/coverage.cobertura.xml
 ```
 
 Menu (Nederlands)

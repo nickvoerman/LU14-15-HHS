@@ -4,3 +4,6 @@ Codex.Tests/bin/
 Codex/bin/
 Codex.Tests/obj/
 
+# Test results and coverage
+TestResults/
+
