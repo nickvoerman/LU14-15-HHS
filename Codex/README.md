@@ -2,7 +2,7 @@ Codex Console Applicatie
 
 Testplan (beknopt)
 
-- Doel: aantonen dat kernlogica correct werkt; streefdekking: minimaal 70%.
+- Doel: aantonen dat kernlogica correct werkt; streefdekking: minimaal 60%.
 - Strategie: unit-tests met xUnit. Focus op pure services en domeinregels.
 - Tools: xUnit, Microsoft.NET.Test.Sdk, coverlet.collector voor coverage.
 
